@@ -3,5 +3,5 @@
 public class Recipe
 {
     public Guid Id { get; set; }
-    public Ingredient[] IngredientId { get; set; }
+    public ICollection<Ingredient> IngredientId { get; set; }
 }
