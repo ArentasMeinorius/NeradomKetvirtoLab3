@@ -6,5 +6,5 @@ public class Company
     public string Title { get; set; }
     public Address Address { get; set; }
     public string Website { get; set; }
-    public User[] Employees { get; set; }
+    public ICollection<User> Employees { get; set; }
 }

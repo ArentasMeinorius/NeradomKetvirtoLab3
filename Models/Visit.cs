@@ -8,5 +8,5 @@ public class Visit
     public int GuestCount { get; set; }
     public DateTime StartDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
-    public Order[] Orders { get; set; }
+    public ICollection<Order> Orders { get; set; }
 }

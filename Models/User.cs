@@ -6,7 +6,7 @@ public class User
     public string Role { get; set; }
     public string FirstName { get; set; }
     public Address DeliveryAddress { get; set; }
-    public Order[] Orders { get; set; }
-    public Reservation[] Reservations { get; set; }
+    public ICollection<Order> Orders { get; set; }
+    public ICollection<Reservation> Reservations { get; set; }
     public DiscountCondition LoayaltyFeatures { get; set; }
 }

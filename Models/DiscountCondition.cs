@@ -2,6 +2,6 @@
 
 public class DiscountCondition
 {
-    public Discounts Id { get; set; }
-    public Guid Name { get; set; }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
 }
