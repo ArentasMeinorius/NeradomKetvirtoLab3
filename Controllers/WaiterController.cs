@@ -6,62 +6,22 @@ namespace NeradomKetvirtoLab3.Controllers;
 
 [ApiController]
 [Route("[controller]")] // Added to resolve swagger documentation naming conflicts
-public class ManagerController : ControllerBase
+public class WaiterController : ControllerBase
 {
-    private readonly ITablesService _tablesService;
     private readonly IAuthenticationService _authenticationService;
     private readonly IOrdersService _ordersService;
-    private readonly IConsumablesService _consumablesService;
     private readonly IVisitsService _visitsService;
 
-    public ManagerController(
-        ITablesService tablesService, 
+    public WaiterController(
         IAuthenticationService authenticationService, 
         IOrdersService ordersService,
-        IConsumablesService consumablesService,
         IVisitsService visitsService)
     {
-        _tablesService = tablesService;
         _authenticationService = authenticationService;
         _ordersService = ordersService;
-        _consumablesService = consumablesService;
         _visitsService = visitsService;
     }
-
-    /// <summary>
-    /// Edit table information
-    /// </summary>
-    /// <param name="newTable"></param>
-    /// <returns></returns>
-    [HttpPut("tables")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Table))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Table> UpdateTable(Table newTable)
-    {
-        var table = _tablesService.Update(newTable);
-        if(table != null) { 
-            return new ObjectResult(table) { StatusCode = StatusCodes.Status201Created }; 
-        }
-        return NotFound();
-    }
     
-    /// <summary>
-    /// Edit consumable information
-    /// </summary>
-    /// <param name="newConsumable"></param>
-    /// <returns></returns>
-    [HttpPut("consumables")]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Consumable))]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Consumable> UpdateConsumable(Consumable newConsumable)
-    {
-        var consumable = _consumablesService.Update(newConsumable);
-        if (consumable != null) {
-            return new ObjectResult(consumable) { StatusCode = StatusCodes.Status201Created }; 
-        }
-        return NotFound();
-    }
-
     /// <summary>
     /// Edit visit information
     /// </summary>
@@ -78,7 +38,7 @@ public class ManagerController : ControllerBase
         }
         return NotFound();
     }
-
+    
     /// <summary>
     /// Mark order as complete
     /// </summary>
@@ -126,7 +86,7 @@ public class ManagerController : ControllerBase
         if (orders.Count != 0) { return Ok(orders); }
         return BadRequest();
     }
-
+    
     /// <summary>
     /// Edit order information
     /// </summary>
@@ -141,22 +101,6 @@ public class ManagerController : ControllerBase
         if (order != null) { 
             return new ObjectResult(order) { StatusCode = StatusCodes.Status201Created };
         }
-        return NotFound();
-    }
-
-    /// <summary>
-    /// Add role to user
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="role"></param>
-    /// <returns></returns>
-    [HttpPut("role")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<User> AddRole(Guid userId, string role)
-    {
-        var user = _authenticationService.AddRole(userId, role);
-        if (user != null) { return Ok(); }
         return NotFound();
     }
     
