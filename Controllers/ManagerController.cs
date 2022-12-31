@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using NeradomKetvirtoLab3.Models;
 using NeradomKetvirtoLab3.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace NeradomKetvirtoLab3.Controllers;
 
 [ApiController]
 [Route("[controller]")] // Added to resolve swagger documentation naming conflicts
+[SwaggerTag("managing consumables and employees")]
 public class ManagerController : ControllerBase
 {
     private readonly ITablesService _tablesService;
