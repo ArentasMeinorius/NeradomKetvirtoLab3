@@ -1,17 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using NeradomKetvirtoLab3.Models;
-using NeradomKetvirtoLab3.Repositories;
+using NeradomKetvirtoLab3.Services;
 
 namespace NeradomKetvirtoLab3.Controllers;
 
-[Route("[controller]")]
 [ApiController]
 public class ManagerController : ControllerBase
 {
-    readonly IManagerRepository _managerRepository;
-    public ManagerController(IManagerRepository managerRepository)
+    private readonly ITablesService _tablesService;
+    private readonly IAuthenticationService _authenticationService;
+    private readonly IOrdersService _ordersService;
+    private readonly IConsumablesService _consumablesService;
+    private readonly IVisitsService _visitsService;
+
+    public ManagerController(
+        ITablesService tablesService, 
+        IAuthenticationService authenticationService, 
+        IOrdersService ordersService,
+        IConsumablesService consumablesService,
+        IVisitsService visitsService)
     {
-        _managerRepository = managerRepository;
+        _tablesService = tablesService;
+        _authenticationService = authenticationService;
+        _ordersService = ordersService;
+        _consumablesService = consumablesService;
+        _visitsService = visitsService;
     }
 
     /// <summary>
@@ -24,13 +37,12 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Table> UpdateTable(Table newTable)
     {
-        var table = _managerRepository.UpdateTable(newTable);
+        var table = _tablesService.Update(newTable);
         if(table != null) { 
             return new ObjectResult(table) { StatusCode = StatusCodes.Status201Created }; 
         }
         return NotFound();
     }
-
     /// <summary>
     /// Edit consumable information
     /// </summary>
@@ -41,7 +53,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Consumable> UpdateConsumable(Consumable newConsumable)
     {
-        var consumable = _managerRepository.UpdateConsumable(newConsumable);
+        var consumable = _consumablesService.Update(newConsumable);
         if (consumable != null) {
             return new ObjectResult(consumable) { StatusCode = StatusCodes.Status201Created }; 
         }
@@ -58,7 +70,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Visit> UpdateVisit(Visit newVisit)
     {
-        var visit = _managerRepository.UpdateVisit(newVisit);
+        var visit = _visitsService.UpdateVisit(newVisit);
         if (visit != null) { 
             return new ObjectResult(visit) { StatusCode = StatusCodes.Status201Created }; 
         }
@@ -75,7 +87,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Order> MarkOrderAsCompleted(Guid orderId)
     {
-        var order = _managerRepository.MarkOrderAsComplete(orderId);
+        var order = _ordersService.MarkOrderAsComplete(orderId);
         if (order != null) { return Ok(); }
         return NotFound();
     }
@@ -90,7 +102,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Order> DeclineOrder(Guid orderId)
     {
-        var order = _managerRepository.DeclineOrder(orderId);
+        var order = _ordersService.DeclineOrder(orderId);
         if (order != null) { return Ok(); }
         return NotFound();
     }
@@ -108,7 +120,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<List<Order>> GetOrders(Guid orderId, string searchString, int skip, int limit)
     {
-        List<Order> orders = _managerRepository.GetOrders(orderId, searchString, skip, limit);
+        var orders = _ordersService.GetPaginated(orderId, searchString, skip, limit).ToList();
         if (orders.Count != 0) { return Ok(orders); }
         return BadRequest();
     }
@@ -123,7 +135,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<Order> UpdateOrder(Order newOrder)
     {
-        var order = _managerRepository.UpdateOrder(newOrder);
+        var order = _ordersService.Update(newOrder);
         if (order != null) { 
             return new ObjectResult(order) { StatusCode = StatusCodes.Status201Created };
         }
@@ -141,11 +153,11 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<User> AddRole(Guid userId, string role)
     {
-        var user = _managerRepository.AddRole(userId, role);
+        var user = _authenticationService.AddRole(userId, role);
         if (user != null) { return Ok(); }
         return NotFound();
     }
-
+    
     /// <summary>
     /// Authenticates POS system user
     /// </summary>
@@ -156,7 +168,7 @@ public class ManagerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public ActionResult<UserWithAuth> Authenticate(UserAuth userAuth)
     {
-        var user = _managerRepository.Authenticate(userAuth);
+        var user = _authenticationService.Authenticate(userAuth);
         if (user != null) { return Ok(); }
         return Unauthorized();
     }
