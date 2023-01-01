@@ -11,7 +11,6 @@ public class ProjectDbContext : DbContext
         optionsBuilder.UseInMemoryDatabase(databaseName: "ProjectDb");
         optionsBuilder.EnableSensitiveDataLogging (true);
     }
-    public DbSet<Author> Authors { get; set; }
 
     public DbSet<Book> Books { get; set; }
 
