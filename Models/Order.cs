@@ -9,6 +9,7 @@ public class Order
     public DateTime EstimatedDeliveryTime { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public decimal Paid { get; set; }
+    public ICollection<Discounts> Discounts { get; set; }
 
 }
 

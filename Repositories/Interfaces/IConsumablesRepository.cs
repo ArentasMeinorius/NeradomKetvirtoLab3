@@ -4,5 +4,7 @@ namespace NeradomKetvirtoLab3.Repositories;
 
 public interface IConsumablesRepository
 {
-    public Consumable? Update(Consumable newConsumable);
+    Task<IEnumerable<Consumable>> GetAll();
+
+    Task<Consumable?> Update(Consumable newConsumable);
 }

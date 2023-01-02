@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeradomKetvirtoLab3.Database;
 using NeradomKetvirtoLab3.Models;
 
@@ -22,9 +23,9 @@ public class UserAuthsRepository : IUserAuthsRepository
         context.SaveChanges();
     }
 
-    public IEnumerable<UserAuth> GetAll()
+    public async Task<IEnumerable<UserAuth>> GetAll()
     {
-        using var context = new ProjectDbContext();
-        return context.UsersAuths;
+        await using var context = new ProjectDbContext();
+        return await context.UsersAuths.ToListAsync();
     }
 }

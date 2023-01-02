@@ -14,31 +14,32 @@ public class AuthenticationService : IAuthenticationService
         _userAuthsRepository = userAuthsRepository;
     }
 
-    public UserWithAuth? Authenticate(UserAuth newUserAuth)
+    public async Task<UserWithAuth?> Authenticate(UserAuth newUserAuth)
     {
-        var userAuth = _userAuthsRepository
-            .GetAll()
+        var userAuth = (await _userAuthsRepository.GetAll())
             .FirstOrDefault(user => user.Id == newUserAuth.Id && user.SecurityCode == newUserAuth.SecurityCode);
         
         if (userAuth is null)
             return null;
         
-        var user = _usersRepository
-            .GetAll()
+        var user = (await _usersRepository.GetAll())
             .FirstOrDefault(user => user.Id == userAuth.Id);
         
         return user == null ? null : new UserWithAuth(user, userAuth.SecurityCode);
     }
 
-    public User? AddRole(Guid userId, string role)
+    public async Task<User?> AddRole(Guid userId, string role)
     {
-        var user = _usersRepository.GetAll().FirstOrDefault(user => userId.Equals(userId));
+        var user = (await _usersRepository.GetAll())
+            .FirstOrDefault(user => userId.Equals(userId));
+
         if (user == null)
         {
             return null;
         }
+
         user.Role = role;
-        _usersRepository.Update(user);
+        await _usersRepository.Update(user);
         return user;
     }
 }

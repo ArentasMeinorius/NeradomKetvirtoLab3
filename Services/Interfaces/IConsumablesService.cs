@@ -4,5 +4,6 @@ namespace NeradomKetvirtoLab3.Services;
 
 public interface IConsumablesService
 {
-    public Consumable? Update(Consumable newConsumable);
+    Task<IEnumerable<Consumable>> GetAllConsumables();
+    Task<Consumable?> Update(Consumable newConsumable);
 }

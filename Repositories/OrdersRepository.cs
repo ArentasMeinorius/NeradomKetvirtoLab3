@@ -9,7 +9,7 @@ public class OrdersRepository : IOrdersRepository
     public OrdersRepository()
     {
         using var context = new ProjectDbContext();
-        
+
         var orders = new List<Order>
         {
             new Order
@@ -67,7 +67,8 @@ public class OrdersRepository : IOrdersRepository
                 },
                 EstimatedDeliveryTime = DateTime.Now.AddMinutes(15),
                 PaymentMethod = PaymentMethod.Card,
-                Paid = 6
+                Paid = 6,
+                Discounts = new List<Discounts>(),
             }
         };
         
@@ -75,10 +76,18 @@ public class OrdersRepository : IOrdersRepository
         context.SaveChanges();
     }
 
-    public Order? Update(Order newOrder)
+    public async Task<Order?> AddOrder(Order newOrder)
     {
-        using var context = new ProjectDbContext();
-        var order = context.Orders.FirstOrDefault(order => order.Id.Equals(newOrder.Id));
+        await using var context = new ProjectDbContext();
+        await context.Orders.AddAsync(newOrder);
+        await context.SaveChangesAsync();
+        return newOrder;
+    }
+
+    public async Task<Order?> Update(Order newOrder)
+    {
+        await using var context = new ProjectDbContext();
+        var order = await context.Orders.FirstOrDefaultAsync(order => order.Id.Equals(newOrder.Id));
         if (order == null)
         {
             return null;
@@ -89,21 +98,21 @@ public class OrdersRepository : IOrdersRepository
         order.Comment = newOrder.Comment;
         order.EstimatedDeliveryTime = newOrder.EstimatedDeliveryTime;
         context.Orders.Update(order);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return order;
     }
 
-    public IEnumerable<Order> GetPaginated(Guid orderId, string searchString, int pageIndex, int pageSize)
+    public async Task<IEnumerable<Order>> GetPaginated(Guid orderId, string searchString, int pageIndex, int pageSize)
     {
-        using var context = new ProjectDbContext();
+        await using var context = new ProjectDbContext();
 
-        var orderList = context.Orders
+        var orderList = await context.Orders
             .Where(order => order.Id.Equals(orderId))
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
+            .ToListAsync();
 
-        orderList.AddRange(context.Orders
+        orderList.AddRange(await context.Orders
             .Where(order =>
                 order.Comment.ToLower().Contains(searchString.ToLower()) ||
                 Enum.ToObject(typeof(OrderStatus), order.OrderStatus).ToString().ToLower().Contains(searchString.ToLower()) ||
@@ -114,14 +123,31 @@ public class OrdersRepository : IOrdersRepository
             .ThenInclude(a => a.Recipe)
             .ThenInclude(a => a.IngredientId)
             .Skip((pageIndex - 1) * pageSize)
-            .Take(pageSize));
+            .Take(pageSize)
+            .ToListAsync());
 
         return orderList.Distinct().ToList();
     }
 
-    public IEnumerable<Order> GetAll()
+    public async Task<IEnumerable<Order>> GetAll()
     {
-        using var context = new ProjectDbContext();
-        return context.Orders;
+        await using var context = new ProjectDbContext();
+        return await context.Orders.ToListAsync();
+    }
+
+    public async Task<Order?> GetOrder(Guid orderId)
+    {
+        await using var context = new ProjectDbContext();
+        return await context.Orders.FirstOrDefaultAsync(o => o.Id.Equals(orderId));
+    }
+
+    public async Task<Order?> DeleteOrder(Guid orderId)
+    {
+        await using var context = new ProjectDbContext();
+        var order = await context.Orders.FirstOrDefaultAsync(o => o.Id.Equals(orderId));
+        if (order == null) return null;
+        context.Orders.Remove(order);
+        await context.SaveChangesAsync();
+        return order;
     }
 }

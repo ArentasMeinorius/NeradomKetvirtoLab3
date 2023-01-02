@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeradomKetvirtoLab3.Database;
 using NeradomKetvirtoLab3.Models;
 
@@ -55,10 +56,10 @@ public class ConsumablesRepository : IConsumablesRepository
         context.SaveChanges();
     }
 
-    public Consumable? Update(Consumable newConsumable)
+    public async Task<Consumable?> Update(Consumable newConsumable)
     {
         using var context = new ProjectDbContext();
-        var consumable = context.Consumables.FirstOrDefault(consumable => consumable.Id.Equals(newConsumable.Id));
+        var consumable = await context.Consumables.FirstOrDefaultAsync(consumable => consumable.Id.Equals(newConsumable.Id));
         if (consumable == null)
         {
             return null;
@@ -68,7 +69,13 @@ public class ConsumablesRepository : IConsumablesRepository
         consumable.Recipe = newConsumable.Recipe;
         consumable.Price = newConsumable.Price;
         context.Consumables.Update(consumable);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return consumable;
+    }
+
+    public async Task<IEnumerable<Consumable>> GetAll()
+    {
+        await using var context = new ProjectDbContext();
+        return await context.Consumables.ToListAsync();
     }
 }

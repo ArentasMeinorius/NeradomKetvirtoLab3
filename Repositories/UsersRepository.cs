@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeradomKetvirtoLab3.Database;
 using NeradomKetvirtoLab3.Models;
 
@@ -118,17 +119,17 @@ public class UsersRepository : IUsersRepository
         context.SaveChanges();
     }
 
-    public IEnumerable<User> GetAll()
+    public async Task<IEnumerable<User>> GetAll()
     {
-        using var context = new ProjectDbContext();
-        return context.Users;
+        await using var context = new ProjectDbContext();
+        return await context.Users.ToListAsync();
     }
 
-    public User Update(User newUser)
+    public async Task<User?> Update(User newUser)
     {
-        using var context = new ProjectDbContext();
+        await using var context = new ProjectDbContext();
         context.Users.Update(newUser);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return newUser;
     }
 }

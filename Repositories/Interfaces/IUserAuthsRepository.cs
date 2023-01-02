@@ -4,5 +4,5 @@ namespace NeradomKetvirtoLab3.Repositories;
 
 public interface IUserAuthsRepository
 {
-    public IEnumerable<UserAuth> GetAll();
+    Task<IEnumerable<UserAuth>> GetAll();
 }

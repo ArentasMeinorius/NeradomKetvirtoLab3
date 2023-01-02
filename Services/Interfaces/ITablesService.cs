@@ -4,7 +4,7 @@ namespace NeradomKetvirtoLab3.Services;
 
 public interface ITablesService
 {
-    public IEnumerable<Table> GetAllTables();
+    Task<IEnumerable<Table>> GetAllTables();
 
-    public Table? Update(Table newTable);
+    Task<Table?> Update(Table newTable);
 }

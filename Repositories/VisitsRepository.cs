@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeradomKetvirtoLab3.Database;
 using NeradomKetvirtoLab3.Models;
 
@@ -96,10 +97,24 @@ public class VisitsRepository : IVisitsRepository
         context.SaveChanges();
     }
 
-    public Visit? UpdateVisit(Visit newVisit)
+    public async Task<Visit?> AddVisit(Visit newVisit)
     {
-        using var context = new ProjectDbContext();
-        var visit = context.Visits.FirstOrDefault(visit => visit.Id.Equals(newVisit.Id));
+        await using var context = new ProjectDbContext();
+        await context.Visits.AddAsync(newVisit);
+        await context.SaveChangesAsync();
+        return newVisit;
+    }
+
+    public async Task<Visit?> GetVisit(Guid visitId)
+    {
+        await using var context = new ProjectDbContext();
+        return await context.Visits.FirstOrDefaultAsync(v => v.Id.Equals(visitId));
+    }
+
+    public async Task<Visit?> UpdateVisit(Visit newVisit)
+    {
+        await using var context = new ProjectDbContext();
+        var visit = await GetVisit(newVisit.Id);
         if (visit == null)
         {
             return null;
@@ -110,7 +125,17 @@ public class VisitsRepository : IVisitsRepository
         visit.EndDateTime = newVisit.EndDateTime;
         visit.Orders = newVisit.Orders;
         context.Visits.Update(visit);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+        return visit;
+    }
+
+    public async Task<Visit?> DeleteVisit(Guid visitId)
+    {
+        await using var context = new ProjectDbContext();
+        var visit = await GetVisit(visitId);
+        if (visit == null) return null;
+        context.Visits.Remove(visit);
+        await context.SaveChangesAsync();
         return visit;
     }
 }

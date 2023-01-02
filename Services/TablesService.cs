@@ -12,9 +12,9 @@ public class TablesService : ITablesService
         _tablesRepository = tablesRepository;
     }
 
-    public IEnumerable<Table> GetAllTables()
-        => _tablesRepository.GetAll();
+    public async Task<IEnumerable<Table>> GetAllTables()
+        => await _tablesRepository.GetAll();
 
-    public Table? Update(Table newTable)
-        => _tablesRepository.Update(newTable);
+    public async Task<Table?> Update(Table newTable)
+        => await _tablesRepository.Update(newTable);
 }

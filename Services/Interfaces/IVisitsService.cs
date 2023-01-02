@@ -4,5 +4,11 @@ namespace NeradomKetvirtoLab3.Services;
 
 public interface IVisitsService
 {
-    public Visit? UpdateVisit(Visit newVisit);
+    Task<Visit?> AddVisit(Visit newVisit);
+
+    Task<Visit?> DeleteVisit(Guid visitId);
+
+    Task<Visit?> UpdateVisit(Visit newVisit);
+
+    Task<decimal?> CalculateReceipt(Guid visitId);
 }

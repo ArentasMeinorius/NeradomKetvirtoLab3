@@ -4,9 +4,15 @@ namespace NeradomKetvirtoLab3.Repositories;
 
 public interface IOrdersRepository
 {
-    public Order? Update(Order newOrder);
+    Task<Order?> Update(Order newOrder);
 
-    IEnumerable<Order> GetPaginated(Guid orderId, string searchString, int pageIndex, int pageSize);
+    Task<IEnumerable<Order>> GetPaginated(Guid orderId, string searchString, int pageIndex, int pageSize);
 
-    IEnumerable<Order> GetAll();
+    Task<IEnumerable<Order>> GetAll();
+
+    Task<Order?> AddOrder(Order newOrder);
+
+    Task<Order?> DeleteOrder(Guid orderId);
+
+    Task<Order?> GetOrder(Guid orderId);
 }
