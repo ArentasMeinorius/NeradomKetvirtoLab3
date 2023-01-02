@@ -12,18 +12,18 @@ public class VisitsService : IVisitsService
         _visitsRepository = visitsRepository;
     }
 
-    public Visit? AddVisit(Visit newVisit)
-        => _visitsRepository.AddVisit(newVisit);
+    public async Task<Visit?> AddVisit(Visit newVisit)
+        => await _visitsRepository.AddVisit(newVisit);
 
-    public Visit? UpdateVisit(Visit newVisit)
-        => _visitsRepository.UpdateVisit(newVisit);
+    public async Task<Visit?> UpdateVisit(Visit newVisit)
+        => await _visitsRepository.UpdateVisit(newVisit);
 
-    public Visit? DeleteVisit(Guid visitId)
-        => _visitsRepository.DeleteVisit(visitId);
+    public async Task<Visit?> DeleteVisit(Guid visitId)
+        => await _visitsRepository.DeleteVisit(visitId);
 
-    public decimal? CalculateReceipt(Guid visitId)
+    public async Task<decimal?> CalculateReceipt(Guid visitId)
     {
-        var visit = _visitsRepository.GetVisit(visitId);
+        var visit = await _visitsRepository.GetVisit(visitId);
         if (visit == null)
         {
             return null;

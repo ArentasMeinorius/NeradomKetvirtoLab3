@@ -4,7 +4,7 @@ namespace NeradomKetvirtoLab3.Repositories;
 
 public interface IUsersRepository
 {
-    public IEnumerable<User> GetAll();
+    Task<IEnumerable<User>> GetAll();
 
-    public User Update(User newUser);
+    Task<User?> Update(User newUser);
 }

@@ -12,9 +12,9 @@ public class ConsumablesService : IConsumablesService
         _consumablesRepository = consumablesRepository;
     }
 
-    public Consumable? Update(Consumable newConsumable)
-        => _consumablesRepository.Update(newConsumable);
+    public async Task<Consumable?> Update(Consumable newConsumable)
+        => await _consumablesRepository.Update(newConsumable);
 
-    public IEnumerable<Consumable> GetAllConsumables()
-        => _consumablesRepository.GetAll();
+    public async Task<IEnumerable<Consumable>> GetAllConsumables()
+        => await _consumablesRepository.GetAll();
 }

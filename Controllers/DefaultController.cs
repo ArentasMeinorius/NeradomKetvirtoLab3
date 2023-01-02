@@ -32,9 +32,9 @@ public class DefaultController : ControllerBase
     [HttpPost("orders/comment")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Order))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Order> AddCommentOrder(Guid orderId, string comment)
+    public async Task<ActionResult<Order>> AddCommentOrder(Guid orderId, string comment)
     {
-        var order = _ordersService.AddComment(orderId, comment);
+        var order = await _ordersService.AddComment(orderId, comment);
         if (order != null) { return Ok(order); }
         return NotFound();
     }
@@ -45,9 +45,9 @@ public class DefaultController : ControllerBase
     [HttpPost("orders/addDiscount")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Order))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Order> AddDiscount(Guid orderId, Discounts discount)
+    public async Task<ActionResult<Order>> AddDiscount(Guid orderId, Discounts discount)
     {
-        var order = _ordersService.AddDiscount(orderId, discount);
+        var order = await _ordersService.AddDiscount(orderId, discount);
         if (order != null) { return Ok(order); }
         return NotFound();
     }
@@ -58,9 +58,9 @@ public class DefaultController : ControllerBase
     [HttpPost("orders")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Order))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Order> AddOrder(Order newOrder)
+    public async Task<ActionResult<Order>> AddOrder(Order newOrder)
     {
-        var order = _ordersService.AddOrder(newOrder);
+        var order = await _ordersService.AddOrder(newOrder);
         if (order != null)
         {
             return new ObjectResult(order) { StatusCode = StatusCodes.Status201Created };
@@ -74,9 +74,9 @@ public class DefaultController : ControllerBase
     [HttpPost("visits")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Visit))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Visit> AddVisit(Visit newVisit)
+    public async Task<ActionResult<Visit>> AddVisit(Visit newVisit)
     {
-        var visit = _visitsService.AddVisit(newVisit);
+        var visit = await _visitsService.AddVisit(newVisit);
         if (visit != null)
         {
             return new ObjectResult(visit) { StatusCode = StatusCodes.Status201Created };
@@ -90,9 +90,9 @@ public class DefaultController : ControllerBase
     [HttpGet("/receipt/{visitId}")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(decimal))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<decimal> CalculateReceipt(Guid visitId)
+    public async Task<ActionResult<decimal>> CalculateReceipt(Guid visitId)
     {
-        var receipt = _visitsService.CalculateReceipt(visitId);
+        var receipt = await _visitsService.CalculateReceipt(visitId);
         if (receipt != null)
         {
             return new ObjectResult(receipt) { StatusCode = StatusCodes.Status201Created };
@@ -106,9 +106,9 @@ public class DefaultController : ControllerBase
     [HttpDelete("/orders")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Order))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Order> DeleteOrder(Guid orderId)
+    public async Task<ActionResult<Order>> DeleteOrder(Guid orderId)
     {
-        var order = _ordersService.DeleteOrder(orderId);
+        var order = await _ordersService.DeleteOrder(orderId);
         if (order != null)
         {
             return new ObjectResult(order) { StatusCode = StatusCodes.Status201Created };
@@ -122,9 +122,9 @@ public class DefaultController : ControllerBase
     [HttpDelete("/visits")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Visit))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Visit> DeleteVisit(Guid visitId)
+    public async Task<ActionResult<Visit>> DeleteVisit(Guid visitId)
     {
-        var visit = _visitsService.DeleteVisit(visitId);
+        var visit = await _visitsService.DeleteVisit(visitId);
         if (visit != null)
         {
             return new ObjectResult(visit) { StatusCode = StatusCodes.Status201Created };
@@ -138,9 +138,9 @@ public class DefaultController : ControllerBase
     [HttpGet("consumables")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IEnumerable<Consumable>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<IEnumerable<Consumable>> GetConsumables()
+    public async Task<ActionResult<IEnumerable<Consumable>>> GetConsumables()
     {
-        var consumables = _consumablesService.GetAllConsumables();
+        var consumables = await _consumablesService.GetAllConsumables();
         if (consumables != null)
         {
             return new ObjectResult(consumables) { StatusCode = StatusCodes.Status201Created };
@@ -154,9 +154,9 @@ public class DefaultController : ControllerBase
     [HttpGet("tables")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(IEnumerable<Table>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<IEnumerable<Table>> GetTables()
+    public async Task<ActionResult<IEnumerable<Table>>> GetTables()
     {
-        var tables = _tablesService.GetAllTables();
+        var tables = await _tablesService.GetAllTables();
         if(tables != null) { 
             return new ObjectResult(tables) { StatusCode = StatusCodes.Status201Created }; 
         }

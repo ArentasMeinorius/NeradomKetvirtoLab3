@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeradomKetvirtoLab3.Database;
 using NeradomKetvirtoLab3.Models;
 
@@ -29,10 +30,10 @@ public class TablesRepository : ITablesRepository
         context.SaveChanges();
     }
     
-    public Table? Update(Table newTable)
+    public async Task<Table?> Update(Table newTable)
     {
-        using var context = new ProjectDbContext();
-        var table = context.Tables.FirstOrDefault(table => table.Id == newTable.Id);
+        await using var context = new ProjectDbContext();
+        var table = await context.Tables.FirstOrDefaultAsync(table => table.Id == newTable.Id);
         if (table is null)
             return null;
         
@@ -40,14 +41,14 @@ public class TablesRepository : ITablesRepository
         table.IsOccupied = newTable.IsOccupied;
         
         context.Tables.Update(table);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         
         return table;
     }
 
-    public IEnumerable<Table> GetAll()
+    public async Task<IEnumerable<Table>> GetAll()
     {
-        using var context = new ProjectDbContext();
-        return context.Tables;
+        await using var context = new ProjectDbContext();
+        return await context.Tables.ToListAsync();
     }
 }

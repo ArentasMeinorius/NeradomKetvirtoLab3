@@ -4,8 +4,8 @@ namespace NeradomKetvirtoLab3.Repositories;
 
 public interface IVisitsRepository
 {
-    Visit? AddVisit(Visit newVisit);
-    Visit? DeleteVisit(Guid visitId);
-    Visit? GetVisit(Guid visitId);
-    public Visit? UpdateVisit(Visit newVisit);
+    Task<Visit?> AddVisit(Visit newVisit);
+    Task<Visit?> DeleteVisit(Guid visitId);
+    Task<Visit?> GetVisit(Guid visitId);
+    Task<Visit?> UpdateVisit(Visit newVisit);
 }
