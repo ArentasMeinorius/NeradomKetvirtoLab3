@@ -71,4 +71,10 @@ public class ConsumablesRepository : IConsumablesRepository
         context.SaveChanges();
         return consumable;
     }
+
+    public IEnumerable<Consumable> GetAll()
+    {
+        using var context = new ProjectDbContext();
+        return context.Consumables;
+    }
 }

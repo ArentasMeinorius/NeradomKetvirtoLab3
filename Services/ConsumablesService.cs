@@ -14,4 +14,7 @@ public class ConsumablesService : IConsumablesService
 
     public Consumable? Update(Consumable newConsumable)
         => _consumablesRepository.Update(newConsumable);
+
+    public IEnumerable<Consumable> GetAllConsumables()
+        => _consumablesRepository.GetAll();
 }

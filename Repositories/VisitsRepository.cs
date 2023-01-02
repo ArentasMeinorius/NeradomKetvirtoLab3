@@ -96,6 +96,20 @@ public class VisitsRepository : IVisitsRepository
         context.SaveChanges();
     }
 
+    public Visit? AddVisit(Visit newVisit)
+    {
+        using var context = new ProjectDbContext();
+        context.Visits.Add(newVisit);
+        context.SaveChanges();
+        return newVisit;
+    }
+
+    public Visit? GetVisit(Guid visitId)
+    {
+        using var context = new ProjectDbContext();
+        return context.Visits.FirstOrDefault(v => v.Id.Equals(visitId));
+    }
+
     public Visit? UpdateVisit(Visit newVisit)
     {
         using var context = new ProjectDbContext();
@@ -111,6 +125,15 @@ public class VisitsRepository : IVisitsRepository
         visit.Orders = newVisit.Orders;
         context.Visits.Update(visit);
         context.SaveChanges();
+        return visit;
+    }
+
+    public Visit? DeleteVisit(Guid visitId)
+    {
+        using var context = new ProjectDbContext();
+        var visit = context.Visits.FirstOrDefault(v => v.Id.Equals(visitId));
+        if (visit == null) return null;
+        context.Visits.Remove(visit);
         return visit;
     }
 }

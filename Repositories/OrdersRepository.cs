@@ -9,7 +9,7 @@ public class OrdersRepository : IOrdersRepository
     public OrdersRepository()
     {
         using var context = new ProjectDbContext();
-        
+
         var orders = new List<Order>
         {
             new Order
@@ -67,12 +67,21 @@ public class OrdersRepository : IOrdersRepository
                 },
                 EstimatedDeliveryTime = DateTime.Now.AddMinutes(15),
                 PaymentMethod = PaymentMethod.Card,
-                Paid = 6
+                Paid = 6,
+                Discounts = new List<Discounts>(),
             }
         };
         
         context.Orders.AddRange(orders);
         context.SaveChanges();
+    }
+
+    public Order? AddOrder(Order newOrder)
+    {
+        using var context = new ProjectDbContext();
+        context.Orders.Add(newOrder);
+        context.SaveChanges();
+        return newOrder;
     }
 
     public Order? Update(Order newOrder)
@@ -123,5 +132,14 @@ public class OrdersRepository : IOrdersRepository
     {
         using var context = new ProjectDbContext();
         return context.Orders;
+    }
+
+    public Order? DeleteOrder(Guid orderId)
+    {
+        using var context = new ProjectDbContext();
+        var order = context.Orders.FirstOrDefault(o => o.Id.Equals(orderId));
+        if (order == null) return null;
+        context.Orders.Remove(order);
+        return order;
     }
 }
